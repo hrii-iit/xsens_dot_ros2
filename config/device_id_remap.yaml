@@ -1,0 +1,7 @@
+/**:
+  ros__parameters:
+    scan_duration: 10.0
+    device_id_remap:
+      D4_22_CD_00_81_A1: A
+      D4_22_CD_00_82_1A: B
+      D4_22_CD_00_83_7E: C
