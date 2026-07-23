@@ -20,6 +20,10 @@ public:
         double scan_duration = 20.0;
         if (this->has_parameter("scan_duration"))
             scan_duration = this->get_parameter("scan_duration").as_double();
+
+        bool enable_logging = false;
+        if (this->has_parameter("enable_logging"))
+            enable_logging = this->get_parameter("enable_logging").as_bool();
         
         // Get device ID remap parameters from the ROS2 parameter server
         auto result = this->list_parameters({"device_id_remap"}, 10);
@@ -75,15 +79,20 @@ public:
                 RCLCPP_INFO(this->get_logger(), "Successfully set profile to General");
             else
                 RCLCPP_ERROR(this->get_logger(), "Setting filter profile failed!");
+            
+            if (enable_logging)
+            {
+                RCLCPP_INFO(this->get_logger(), "Enabling logging to CSV file for device %s", device->bluetoothAddress().c_str());
+                RCLCPP_INFO(this->get_logger(), "Setting quaternion CSV output");
+                device->setLogOptions(XsLogOptions::Quaternion);
 
-            RCLCPP_INFO(this->get_logger(), "Setting quaternion CSV output");
-            // device->setLogOptions(XsLogOptions::Quaternion);
+                // if (!device->enableLogging())
+                //     RCLCPP_ERROR(this->get_logger(), "Failed to enable logging. Reason: %s", device->lastResultText().c_str());
 
-            // XsString logFileName = XsString("logfile_") << device->bluetoothAddress().replacedAll(":", "-") << ".csv";
-            // RCLCPP_INFO(this->get_logger(), "Enable logging to: %s", logFileName.c_str());
-            // if (!device->enableLogging(logFileName))
-                // RCLCPP_ERROR(this->get_logger(), "Failed to enable logging. Reason: %s", device->lastResultText().c_str());
-
+                XsString logFileName = XsString("logfile_") << device->bluetoothAddress().replacedAll(":", "-") << ".csv";
+                RCLCPP_INFO(this->get_logger(), "Enable logging to: %s", logFileName.c_str());
+            }
+            
             RCLCPP_INFO(this->get_logger(), "Putting device into measurement mode.");
             if (!device->startMeasurement(XsPayloadMode::ExtendedEuler))
             {
@@ -209,10 +218,10 @@ private:
                 if (packet.containsOrientation())
                 {
                     XsQuaternion quat = packet.orientationQuaternion();
-                    imu_msg.orientation.x = quat[0];
-                    imu_msg.orientation.y = quat[1];
-                    imu_msg.orientation.z = quat[2];
-                    imu_msg.orientation.w = quat[3];
+                    imu_msg.orientation.x = quat.x();
+                    imu_msg.orientation.y = quat.y();
+                    imu_msg.orientation.z = quat.z();
+                    imu_msg.orientation.w = quat.w();
                 }
                 imu_pub_map_[device_id]->publish(imu_msg);
             }
