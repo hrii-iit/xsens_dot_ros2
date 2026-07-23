@@ -347,7 +347,7 @@ void XdpcHandler::onAdvertisementFound(const XsPortInfo* portInfo)
 */
 void XdpcHandler::onBatteryUpdated(XsDotDevice* device, int batteryLevel, int chargingStatus)
 {
-	cout << device->deviceTagName() << " BatteryLevel: " << batteryLevel << " Charging status: " << chargingStatus;
+	cout << device->deviceTagName() << " address " << device->bluetoothAddress() << " BatteryLevel: " << batteryLevel << " Charging status: " << chargingStatus;
 	cout << endl;
 }
 
