@@ -21,12 +21,20 @@ def generate_launch_description():
 
     # device_id_remap_config = LaunchConfiguration(device_id_remap_arg_name)
 
+    enable_logging_arg_name = "enable_logging"
+    enable_logging_arg = DeclareLaunchArgument(
+        enable_logging_arg_name,
+        default_value="true",
+        description="Enable logging for the xsens_dot_node.",
+    )
+
     config_file = PathJoinSubstitution(
         [FindPackageShare("xsens_dot_ros2"), "config", "device_id_remap.yaml"]
     )
     return LaunchDescription(
         [
             # device_id_remap_arg,
+            enable_logging_arg,
             Node(
                 package="xsens_dot_ros2",
                 executable="xsens_dot_node",
@@ -34,7 +42,8 @@ def generate_launch_description():
                 namespace="xsens",
                 parameters=[
                     # device_id_remap_config
-                    config_file
+                    config_file,
+                    {enable_logging_arg_name: LaunchConfiguration(enable_logging_arg_name)}
                 ],
                 arguments=["--ros-args", "--log-level", "info"],
             ),

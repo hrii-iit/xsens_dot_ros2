@@ -86,10 +86,11 @@ public:
                 RCLCPP_INFO(this->get_logger(), "Setting quaternion CSV output");
                 device->setLogOptions(XsLogOptions::Quaternion);
 
-                // if (!device->enableLogging())
-                //     RCLCPP_ERROR(this->get_logger(), "Failed to enable logging. Reason: %s", device->lastResultText().c_str());
-
                 XsString logFileName = XsString("logfile_") << device->bluetoothAddress().replacedAll(":", "-") << ".csv";
+
+                if (!device->enableLogging(logFileName))
+                    RCLCPP_ERROR(this->get_logger(), "Failed to enable logging. Reason: %s", device->lastResultText().c_str());
+
                 RCLCPP_INFO(this->get_logger(), "Enable logging to: %s", logFileName.c_str());
             }
             
