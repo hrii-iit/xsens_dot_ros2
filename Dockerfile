@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     sharutils \
     python3-pip \
     libsuitesparse-dev \
-    bluez
+    bluez \
+    ros-humble-rmw-cyclonedds-cpp
 
 ENTRYPOINT [""]
