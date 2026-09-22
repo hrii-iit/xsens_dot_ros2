@@ -15,6 +15,11 @@ To use the XSens Dot ROS 2 package, enable the bluetooth and dbus services in th
 dhr -v /var/run/dbus:/var/run/dbus -v /run/dbus:/run/dbus
 ```
 
+Add `--cyclone` if you want to use the cyclone DDS:
+```
+dhr -v /var/run/dbus:/var/run/dbus -v /run/dbus:/run/dbus --cyclone
+```
+
 Launch the XSens dot streaming:
 ```bash
 ros2 launch xsens_dot_ros2 stream.launch.py
